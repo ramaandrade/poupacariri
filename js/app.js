@@ -2,8 +2,8 @@
  * PoupaCariri v2.0 - Main Application Entrypoint
  */
 
-import { SimulationEngine } from "./engine.js";
-import { UIManager } from "./ui.js";
+import { SimulationEngine } from "./engine.js?v=2.2";
+import { UIManager } from "./ui.js?v=2.2";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Inicializando PoupaCariri (URCA) v2.0...");

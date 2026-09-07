@@ -3,7 +3,7 @@
  * Single-Page Application responsiva, interativa e orientada a dados
  */
 
-import { formatBRL } from "./config.js";
+import { formatBRL } from "./config.js?v=2.2";
 
 export class UIManager {
   constructor(engine) {

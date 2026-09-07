@@ -3,9 +3,9 @@
  * Grounded nas seções 5, 6 e 7 do PRD
  */
 
-import { INITIAL_STATE, formatBRL } from "./config.js";
-import { getRandomCaririEvent } from "./events.js";
-import { BADGE_DEFINITIONS } from "./badges.js";
+import { INITIAL_STATE, formatBRL } from "./config.js?v=2.2";
+import { getRandomCaririEvent } from "./events.js?v=2.2";
+import { BADGE_DEFINITIONS } from "./badges.js?v=2.2";
 
 export class SimulationEngine {
   constructor() {
