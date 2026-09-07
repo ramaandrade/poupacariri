@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoupaCariri – Simulador de Finanças Pessoais Gamificado (URCA)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 selection:bg-emerald-200">
+
+  <!-- TOP NAVIGATION / BRANDING -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        <!-- Logo & Titularidade URCA -->
+        <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-green-800 flex items-center justify-center text-white shadow-md shadow-emerald-700/20">
+              <i class="fa-solid fa-piggy-bank text-xl"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h1 class="text-xl font-black tracking-tight text-slate-900">Poupa<span class="text-emerald-600">Cariri</span></h1>
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 tracking-wider">URCA v2.0</span>
+              </div>
+              <p class="text-xs text-slate-500 font-medium">Simulador de Finanças Pessoais Gamificado</p>
+            </div>
+          </div>
+
+          <!-- Botão de Ajuda Didática Mobile/Desktop -->
+          <button id="btn-open-help-modal" class="text-slate-600 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100 transition-colors" title="Guia Pedagógico & Ajuda">
+            <i class="fa-solid fa-circle-question text-lg"></i>
+          </button>
+        </div>
+
+        <!-- MEDIDORES VITAIS: MÊS, ESTABILIDADE & FELICIDADE -->
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 w-full md:w-auto">
+          
+          <!-- Badge do Mês Atual -->
+          <div class="flex items-center space-x-2 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200">
+            <i class="fa-solid fa-calendar-days text-emerald-600 text-sm"></i>
+            <div>
+              <span id="current-month-badge" class="text-xs font-bold text-slate-800 block">Mês 1 de 4</span>
+              <span id="current-month-name" class="text-[10px] text-slate-500 block">Início do Semestre</span>
+            </div>
+          </div>
+
+          <!-- Barra de Estabilidade Financeira (Health Bar) -->
+          <div class="bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3 min-w-[170px]">
+            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-slate-700">Estabilidade</span>
+                <span id="stability-badge" class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800">75%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div id="stability-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 75%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de Felicidade / Qualidade de Vida -->
+          <div class="bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3 min-w-[170px]">
+            <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-sm">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-slate-700">Felicidade</span>
+                <span id="happiness-badge" class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-800">80%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div id="happiness-bar" class="h-full bg-rose-500 rounded-full transition-all duration-500" style="width: 80%;"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- PERSONA CARIRI BANNER -->
+    <section class="bg-gradient-to-r from-emerald-900 via-green-900 to-teal-950 text-white p-4 sm:p-5 rounded-2xl shadow-md relative overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+        <i class="fa-solid fa-graduation-cap text-9xl"></i>
+      </div>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+        <div class="flex items-center space-x-4">
+          <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl shadow-inner">
+            👩‍🎓
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h2 id="persona-name" class="text-base sm:text-lg font-bold">Camila Alencar, 19 anos</h2>
+              <span class="bg-emerald-400/20 text-emerald-300 text-[11px] font-semibold px-2 py-0.5 rounded-full border border-emerald-400/30">1º Semestre</span>
+            </div>
+            <p id="persona-bio" class="text-xs sm:text-sm text-emerald-100/90 mt-0.5">Ciências Contábeis • Campus Crato - URCA • Residência: Barbalha</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 self-stretch sm:self-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-white/10">
+          <div class="text-right">
+            <span class="text-[11px] text-emerald-200 block">Bolsa Iniciação Científica</span>
+            <span class="text-base sm:text-lg font-extrabold text-white">R$ 700,00 <span class="text-xs font-normal text-emerald-300">/mês</span></span>
+          </div>
+          <div class="h-8 w-px bg-white/20 mx-1"></div>
+          <div class="text-right">
+            <span class="text-[11px] text-emerald-200 block">Patrimônio Líquido</span>
+            <span id="val-net-worth" class="text-base sm:text-lg font-extrabold text-emerald-300">R$ 600,00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRID DAS DUAS COLUNAS PRINCIPAIS (SEÇÕES 1 & 2 DO PRD) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- ========================================================= -->
+      <!-- COLUNA 1: MONITOR DE SALDOS & ORÇAMENTO (5 cols)           -->
+      <!-- ========================================================= -->
+      <section class="lg:col-span-5 space-y-4">
+        
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-extrabold text-slate-800 flex items-center">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 mr-2"></span>
+            1. Monitor de Saldos & Orçamento
+          </h3>
+          <span class="text-xs text-slate-500 font-medium">Produtos Financeiros</span>
+        </div>
+
+        <!-- CARD: CONTA CORRENTE & POUPANÇA -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          
+          <!-- Conta Corrente -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group">
+            <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+              <span class="font-medium">Conta Corrente</span>
+              <i class="fa-solid fa-wallet text-slate-400 group-hover:text-emerald-600 transition-colors"></i>
+            </div>
+            <div id="val-checking" class="text-xl font-black text-slate-900">R$ 100,00</div>
+            <p class="text-[11px] text-slate-500 mt-1">Disponível p/ transações diárias</p>
+          </div>
+
+          <!-- Poupança (Reserva de Emergência) -->
+          <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-sm relative overflow-hidden group">
+            <div class="flex items-center justify-between text-xs text-emerald-800 mb-1">
+              <span class="font-bold flex items-center">
+                <i class="fa-solid fa-shield-halved mr-1 text-emerald-600"></i> Poupança (Reserva)
+              </span>
+              <button id="btn-open-savings-modal" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-100 hover:bg-emerald-200 px-2 py-0.5 rounded-lg transition-colors">
+                Gerenciar
+              </button>
+            </div>
+            <div id="val-savings" class="text-xl font-black text-emerald-900">R$ 200,00</div>
+            <div class="flex items-center justify-between text-[11px] text-emerald-700 mt-1">
+              <span>Rendimento: <strong>0,5% a.m.</strong></span>
+              <span class="font-semibold text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.2 rounded">Proteção Cariri</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CARD: INVESTIMENTOS ESTRUTURADOS -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-slate-800 flex items-center">
+                <i class="fa-solid fa-chart-line text-emerald-600 mr-2"></i>
+                Alocação de Investimentos
+              </h4>
+              <p class="text-xs text-slate-500">Carteira de Longo Prazo (Risco vs Retorno)</p>
+            </div>
+            <div class="text-right">
+              <span id="val-investments-total" class="text-sm font-black text-slate-900">R$ 300,00</span>
+              <button id="btn-open-investments-modal" class="block text-[11px] font-bold text-emerald-700 hover:underline">
+                Alocar / Resgatar
+              </button>
+            </div>
+          </div>
+
+          <!-- Três Classes de Ativos do PRD -->
+          <div class="space-y-2 pt-1">
+            
+            <!-- Títulos Públicos (Baixo Risco) -->
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-landmark text-xs"></i>
+                </div>
+                <div>
+                  <span class="font-bold text-slate-800 block">Títulos Públicos</span>
+                  <span class="text-[10px] text-slate-500">Baixo Risco • Retorno Seguro (~0,85% a.m.)</span>
+                </div>
+              </div>
+              <span id="val-bonds" class="font-bold text-slate-900">R$ 100,00</span>
+            </div>
+
+            <!-- Fundos de Investimento (Médio Risco) -->
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-layer-group text-xs"></i>
+                </div>
+                <div>
+                  <span class="font-bold text-slate-800 block">Fundos Multimercado</span>
+                  <span class="text-[10px] text-slate-500">Médio Risco • Moderado (-1% a +2,4%)</span>
+                </div>
+              </div>
+              <span id="val-funds" class="font-bold text-slate-900">R$ 100,00</span>
+            </div>
+
+            <!-- Ações (Alto Risco) -->
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-arrow-trend-up text-xs"></i>
+                </div>
+                <div>
+                  <span class="font-bold text-slate-800 block">Ações na Bolsa</span>
+                  <span class="text-[10px] text-slate-500">Alto Risco • Volátil (-6,5% a +9,5%)</span>
+                </div>
+              </div>
+              <span id="val-stocks" class="font-bold text-slate-900">R$ 100,00</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CARD: CRÉDITO & DÍVIDAS -->
+        <div id="card-debts" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 transition-colors">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-slate-800 flex items-center">
+                <i class="fa-solid fa-credit-card text-amber-600 mr-2"></i>
+                Crédito & Dívidas Ativas
+              </h4>
+              <p class="text-xs text-slate-500">Prevenção do Ciclo de Juros Compostos</p>
+            </div>
+            <div class="text-right">
+              <span id="val-debts-total" class="text-sm font-black text-red-600">R$ 0,00</span>
+              <button id="btn-open-debts-modal" class="block text-[11px] font-bold text-red-700 hover:underline">
+                Gerenciar Dívidas
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[11px] text-slate-500 block">Cartão de Crédito</span>
+              <span id="val-credit-card" class="font-bold text-slate-900 block mt-0.5">R$ 0,00</span>
+              <span class="text-[10px] text-red-600 font-semibold">Juros: 12% a.m.</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[11px] text-slate-500 block">Empréstimo Pessoal</span>
+              <span id="val-personal-loan" class="font-bold text-slate-900 block mt-0.5">R$ 0,00</span>
+              <span class="text-[10px] text-amber-600 font-semibold">Juros: 6% a.m.</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- COLUNA 2: DECISÕES DE CONSUMO & PRODUTOS (7 cols)         -->
+      <!-- ========================================================= -->
+      <section class="lg:col-span-7 space-y-4">
+        
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-extrabold text-slate-800 flex items-center">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 mr-2"></span>
+            2. Decisões de Consumo & Produtos
+          </h3>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-700">Orçamento Mensal</span>
+        </div>
+
+        <!-- DESPESAS ESSENCIAIS (OBRIGATÓRIAS) -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 flex items-center">
+                <i class="fa-solid fa-basket-shopping text-blue-600 mr-2"></i>
+                Despesas Essenciais do Mês (Obrigatórias)
+              </h4>
+              <p class="text-xs text-slate-500">Custos fixos de sobrevivência acadêmica e transporte no Cariri</p>
+            </div>
+            <span class="text-sm font-black text-slate-900 bg-blue-50 text-blue-800 px-2.5 py-1 rounded-lg">R$ 400,00</span>
+          </div>
+
+          <!-- Itens Detalhados dos R$ 400 -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center space-x-2">
+              <i class="fa-solid fa-bus text-blue-600 text-sm"></i>
+              <div>
+                <span class="font-bold text-slate-800 block">Transporte Barbalha-Crato</span>
+                <span class="text-[11px] text-slate-500">R$ 160,00 (Ônibus/topique)</span>
+              </div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center space-x-2">
+              <i class="fa-solid fa-utensils text-blue-600 text-sm"></i>
+              <div>
+                <span class="font-bold text-slate-800 block">Alimentação Básica</span>
+                <span class="text-[11px] text-slate-500">R$ 180,00 (RU URCA + básico)</span>
+              </div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center space-x-2">
+              <i class="fa-solid fa-print text-blue-600 text-sm"></i>
+              <div>
+                <span class="font-bold text-slate-800 block">Xerox e Materiais</span>
+                <span class="text-[11px] text-slate-500">R$ 60,00 (Apostilas CA)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DESPESAS SUPÉRFLUAS / ESTILO DE VIDA -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 flex items-center">
+                <i class="fa-solid fa-martini-glass-citrus text-amber-500 mr-2"></i>
+                Despesas Supérfluas & Lazer (Escolha Livre)
+              </h4>
+              <p class="text-xs text-slate-500">Equilibre o lazer para evitar esgotamento mental e prevenir dívidas</p>
+            </div>
+            <span class="text-[11px] text-slate-500 font-medium">Selecione as opções</span>
+          </div>
+
+          <!-- Container dinâmico dos checkboxes do mês -->
+          <div id="superfluous-options-container" class="space-y-2.5">
+            <!-- Injetado dinamicamente via JS -->
+          </div>
+
+          <!-- Alerta didático de privação extrema ou déficit -->
+          <div id="preview-privation-alert" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center">
+            <!-- Mensagem de aviso -->
+          </div>
+        </div>
+
+        <!-- RESUMO DA DECISÃO & BOTÃO DE CONFIRMAR O MÊS -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-lg space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-700 pb-3">
+            <div>
+              <span class="text-xs text-slate-400 block font-medium">Balanço do Mês</span>
+              <span class="text-sm font-bold text-emerald-400">Entradas: R$ 700,00 (Bolsa IC)</span>
+            </div>
+            <div class="flex items-center space-x-4 text-xs">
+              <div>
+                <span class="text-slate-400 block">Essenciais:</span>
+                <span id="preview-essential-cost" class="font-bold text-white">R$ 400,00</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Supérfluos:</span>
+                <span id="preview-superfluous-cost" class="font-bold text-amber-400">R$ 0,00</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">Saldo Projetado:</span>
+                <span id="preview-projected-balance" class="font-bold text-emerald-400">R$ 400,00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs text-slate-300">
+              <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i>
+              Ao confirmar, os rendimentos e imprevistos regionais do Cariri serão processados.
+            </p>
+            <button id="btn-confirm-month" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold text-sm rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center btn-confirm-action">
+              <span>Confirmar Decisões do Mês 1</span>
+              <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- SEÇÃO 3: FEEDBACK DIDÁTICO, MENTORIA & CONQUISTAS         -->
+    <!-- ========================================================= -->
+    <section class="space-y-4">
+      
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-extrabold text-slate-800 flex items-center">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 mr-2"></span>
+          3. Feedback Didático, Mentoria & Conquistas
+        </h3>
+        <span class="text-xs text-slate-500 font-medium">Pedagogia Financeira da URCA</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- CARD DO ORIENTADOR DE FINANÇAS DA URCA (7 cols) -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <div id="mentor-card" class="p-4 sm:p-5 rounded-2xl bg-sky-50/80 border border-sky-200 text-slate-800 shadow-sm transition-all">
+            <div class="flex items-start space-x-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-2xl shadow-sm shrink-0">
+                👨‍🏫
+              </div>
+              <div class="flex-1">
+                <h4 id="mentor-title" class="font-bold text-slate-900 text-sm sm:text-base flex items-center">
+                  <i class="fa-solid fa-user-graduate mr-2 text-emerald-600"></i> Orientador de Finanças da URCA
+                </h4>
+                <div id="mentor-message" class="text-xs sm:text-sm text-slate-700 mt-2 leading-relaxed">
+                  Bem-vinda ao PoupaCariri! Gerencie a bolsa da Camila com sabedoria: garanta os gastos essenciais de R$ 400, mantenha a poupança protegida para imprevistos e aproveite o lazer com moderação.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRÁFICOS VISUAIS: EVOLUÇÃO E COMPOSIÇÃO -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Gráfico 1: Linha de Evolução Patrimonial -->
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700 flex items-center">
+                  <i class="fa-solid fa-chart-line text-emerald-600 mr-1.5"></i> Evolução Patrimonial
+                </span>
+                <span class="text-[10px] text-slate-400">Ao longo do semestre</span>
+              </div>
+              <div class="h-44 w-full relative">
+                <canvas id="chart-net-worth"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfico 2: Rosca de Gastos Acumulados -->
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700 flex items-center">
+                  <i class="fa-solid fa-chart-pie text-blue-600 mr-1.5"></i> Distribuição dos Gastos
+                </span>
+                <span class="text-[10px] text-slate-400">Acumulado</span>
+              </div>
+              <div class="h-44 w-full relative">
+                <canvas id="chart-expenses"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- MURAL DE MEDALHAS & CONQUISTAS (5 cols) -->
+        <div class="lg:col-span-5 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 flex items-center">
+                <i class="fa-solid fa-medal text-amber-500 mr-2"></i>
+                Medalhas & Conquistas Pedagógicas
+              </h4>
+              <p class="text-xs text-slate-500">Desbloqueie hábitos financeiros saudáveis</p>
+            </div>
+            <span class="text-xs font-extrabold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">6 Desafios</span>
+          </div>
+
+          <div id="badges-container" class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+            <!-- Injetado dinamicamente via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- MODAIS INTERATIVOS                                        -->
+  <!-- ========================================================= -->
+
+  <!-- 1. MODAL: EVENTO ALEATÓRIO DO CARIRI -->
+  <div id="modal-cariri-event" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 modal-enter space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+          <i id="event-modal-icon" class="fa-solid fa-motorcycle text-2xl"></i>
+        </div>
+        <span id="event-modal-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
+          Imprevisto Regional
+        </span>
+      </div>
+
+      <div>
+        <h3 id="event-modal-title" class="text-lg font-extrabold text-slate-900">Moto quebrou na ladeira do Crato!</h3>
+        <p id="event-modal-desc" class="text-xs text-slate-600 mt-1 leading-relaxed">
+          A moto usada para chegar à parada do ônibus da URCA quebrou a caminho do campus.
+        </p>
+      </div>
+
+      <!-- Resolução Didática do Impacto -->
+      <div id="event-modal-outcome" class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+        <!-- Injetado dinamicamente -->
+      </div>
+
+      <!-- Conceito Didático -->
+      <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-900">
+        <span class="font-bold block mb-0.5"><i class="fa-solid fa-book-open mr-1"></i> Lição Pedagógica:</span>
+        <span id="event-modal-concept">A reserva de emergência serve para cobrir imprevistos sem pagar juros.</span>
+      </div>
+
+      <button id="btn-close-event-modal" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl transition-colors">
+        Entendido! Continuar Semestre
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. MODAL: POUPANÇA (TRANSFERÊNCIA E RESERVA) -->
+  <div id="modal-savings" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 modal-enter space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Poupança (Reserva de Emergência)</h3>
+            <p class="text-xs text-slate-500">Rendimento seguro de 0,5% ao mês</p>
+          </div>
+        </div>
+        <button id="btn-close-savings-modal" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="form-savings-transfer" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1.5">Ação Desejada</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="savings-action" value="deposit" checked class="text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-xs font-medium text-slate-800">Guardar na Poupança</span>
+            </label>
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="savings-action" value="withdraw" class="text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-xs font-medium text-slate-800">Resgatar p/ Conta</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Valor (R$)</label>
+          <input type="number" id="savings-amount-input" step="5" min="5" value="50" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+        </div>
+
+        <div id="savings-modal-feedback" class="hidden text-xs"></div>
+
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md">
+          Confirmar Transferência
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. MODAL: INVESTIMENTOS (TÍTULOS, FUNDOS E AÇÕES) -->
+  <div id="modal-investments" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 modal-enter space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Alocação de Investimentos</h3>
+            <p class="text-xs text-slate-500">Diversificação e Perfis de Risco [4, 10]</p>
+          </div>
+        </div>
+        <button id="btn-close-investments-modal" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="form-investments-action" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1.5">Operação</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="inv-action" value="invest" checked class="text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-xs font-medium text-slate-800">Aplicar Dinheiro</span>
+            </label>
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="inv-action" value="redeem" class="text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-xs font-medium text-slate-800">Resgatar p/ Conta</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Classe do Ativo</label>
+          <select id="inv-asset-select" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500">
+            <option value="bonds">Títulos Públicos (Baixo Risco • 0,85% a.m. garantido)</option>
+            <option value="funds">Fundos Multimercado (Médio Risco • -1% a +2,4%)</option>
+            <option value="stocks">Ações na Bolsa (Alto Risco • -6,5% a +9,5%)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Valor (R$)</label>
+          <input type="number" id="inv-amount-input" step="10" min="10" value="50" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-emerald-500">
+        </div>
+
+        <div id="inv-modal-feedback" class="hidden text-xs"></div>
+
+        <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-all shadow-md">
+          Confirmar Aplicação / Resgate
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. MODAL: DÍVIDAS E CRÉDITO -->
+  <div id="modal-debts" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 modal-enter space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-xl bg-red-100 text-red-700 flex items-center justify-center">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Gerenciador de Crédito & Dívidas</h3>
+            <p class="text-xs text-slate-500">Prevenção de endividamento [4, 9]</p>
+          </div>
+        </div>
+        <button id="btn-close-debts-modal" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-red-50 rounded-xl border border-red-200 text-xs text-red-900">
+        <i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i>
+        <strong>Aviso Pedagógico:</strong> Dívidas no cartão rotativo cobram <strong>12% ao mês</strong>. Quitar dívidas é o melhor investimento que você pode fazer!
+      </div>
+
+      <form id="form-debts-action" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1.5">Escolha a Operação</label>
+          <div class="space-y-2">
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="debt-action" value="pay_card" checked class="text-emerald-600 focus:ring-emerald-500">
+              <div class="ml-2">
+                <span class="text-xs font-bold text-slate-800 block">Pagar Fatura do Cartão de Crédito</span>
+                <span class="text-[10px] text-slate-500">Elimina juros pesados de 12% a.m.</span>
+              </div>
+            </label>
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="debt-action" value="pay_loan" class="text-emerald-600 focus:ring-emerald-500">
+              <div class="ml-2">
+                <span class="text-xs font-bold text-slate-800 block">Amortizar Empréstimo Pessoal</span>
+                <span class="text-[10px] text-slate-500">Juros de 6% a.m.</span>
+              </div>
+            </label>
+            <label class="flex items-center p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="debt-action" value="take_loan" class="text-emerald-600 focus:ring-emerald-500">
+              <div class="ml-2">
+                <span class="text-xs font-bold text-slate-800 block">Contratar Empréstimo Estudantil</span>
+                <span class="text-[10px] text-amber-600">Recebe na conta com juros de 6% a.m.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 block mb-1">Valor (R$)</label>
+          <input type="number" id="debt-amount-input" step="10" min="10" value="50" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-red-500">
+        </div>
+
+        <div id="debts-modal-feedback" class="hidden text-xs"></div>
+
+        <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl transition-all shadow-md">
+          Confirmar Operação de Crédito
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. MODAL: BOLETIM DO SEMESTRE -->
+  <div id="modal-semester-summary" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 modal-enter space-y-5 text-center">
+      
+      <div class="w-16 h-16 rounded-3xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto shadow-md">
+        🎓
+      </div>
+
+      <div>
+        <span class="text-xs font-bold tracking-wider uppercase text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+          Relatório Final do 1º Semestre
+        </span>
+        <h3 class="text-2xl font-black text-slate-900 mt-2">Boletim Financeiro da Camila</h3>
+        <p class="text-xs text-slate-500">Avaliação Pedagógica do Departamento de Contabilidade da URCA</p>
+      </div>
+
+      <!-- NOTA DO SEMESTRE -->
+      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+        <span class="text-xs text-slate-500 block font-medium">Conceito Acadêmico-Financeiro</span>
+        <div id="summary-grade" class="text-5xl font-extrabold text-emerald-600 my-1">A+</div>
+        <p id="summary-grade-desc" class="text-xs font-semibold text-slate-700">Mestria Financeira e Equilíbrio Semestral!</p>
+      </div>
+
+      <!-- METRICAS DO SEMESTRE -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-left text-xs">
+        <div class="p-3 bg-white rounded-xl border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Patrimônio Final</span>
+          <span id="summary-net-worth" class="font-extrabold text-slate-900 text-sm">R$ 0,00</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Dívidas Finais</span>
+          <span id="summary-total-debts" class="font-extrabold text-red-600 text-sm">R$ 0,00</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Juros Pagos</span>
+          <span id="summary-interest-paid" class="font-extrabold text-amber-600 text-sm">R$ 0,00</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Felicidade</span>
+          <span id="summary-happiness" class="font-extrabold text-rose-600 text-sm">85%</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Estabilidade</span>
+          <span id="summary-stability" class="font-extrabold text-emerald-600 text-sm">80%</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Medalhas</span>
+          <span id="summary-badges-count" class="font-extrabold text-amber-600 text-sm">4 / 6</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button id="btn-restart-simulation" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-md">
+          <i class="fa-solid fa-rotate-right mr-1.5"></i> Jogar Novamente
+        </button>
+        <button onclick="document.getElementById('modal-semester-summary').classList.add('hidden')" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition-all">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL: GUIA PEDAGÓGICO -->
+  <div id="modal-help" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 modal-enter space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Guia Pedagógico PoupaCariri</h3>
+            <p class="text-xs text-slate-500">Fundamentos de Educação Financeira na URCA</p>
+          </div>
+        </div>
+        <button id="btn-close-help-modal" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 text-xs text-slate-700 leading-relaxed">
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+          <h5 class="font-bold text-slate-900 text-sm flex items-center mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 mr-2"></span> 1. O Orçamento Mensal & Distinção de Despesas [3]
+          </h5>
+          <p>O orçamento é o registro das receitas reais e despesas. Gastos essenciais (R$ 400 da Camila) são inegociáveis para a frequência no curso. Gastos supérfluos (lazer) precisam de moderação: privação total gera esgotamento mental, enquanto excessos geram dívidas.</p>
+        </div>
+
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+          <h5 class="font-bold text-slate-900 text-sm flex items-center mb-1">
+            <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span> 2. A Poupança como Reserva para Imprevistos [3, 9]
+          </h5>
+          <p>A poupança possui rendimento de 0,5% ao mês e liquidez imediata. Sua função primária no simulador é servir como <strong>escudo contra imprevistos regionais do Cariri</strong> (conserto de moto, saúde, materiais). Se tiver reserva, o imprevisto não vira dívida.</p>
+        </div>
+
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+          <h5 class="font-bold text-slate-900 text-sm flex items-center mb-1">
+            <span class="w-2 h-2 rounded-full bg-red-600 mr-2"></span> 3. Prevenção de Dívidas & O Perigo do Rotativo [4, 9]
+          </h5>
+          <p>O cartão de crédito rotativo cobra juros violentos de 12% ao mês. Sem planejamento, um pequeno saldo devedor se multiplica rapidamente pela força dos juros compostos negativos, comprometendo bolsas e rendas futuras.</p>
+        </div>
+
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+          <h5 class="font-bold text-slate-900 text-sm flex items-center mb-1">
+            <span class="w-2 h-2 rounded-full bg-amber-600 mr-2"></span> 4. Relação Risco vs Rentabilidade nos Investimentos [4, 10]
+          </h5>
+          <p>Títulos Públicos oferecem retorno garantido de baixo risco; Fundos oferecem retorno moderado; Ações oferecem alto potencial com risco de volatilidade. A diversificação é o caminho para proteger e multiplicar o patrimônio.</p>
+        </div>
+      </div>
+
+      <button onclick="document.getElementById('modal-help').classList.add('hidden')" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors">
+        Fechar Guia
+      </button>
+    </div>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT BUNDLE -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
