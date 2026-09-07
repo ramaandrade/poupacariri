@@ -21,7 +21,7 @@ export class SimulationEngine {
     this.lastEventResult = null;
     this.mentorFeedback = {
       title: "Bem-vinda ao PoupaCariri, Camila!",
-      message: "Você acaba de ingressar em Ciências Contábeis na URCA! Seu desafio neste semestre é honrar os R$ 400 de gastos essenciais, equilibrar seu lazer para não se sobrecarregar, proteger-se com a poupança e começar a investir o que sobrar.",
+      message: "Você acaba de ingressar em Ciências Econômicas na URCA! Seu desafio neste semestre é honrar os R$ 400 de gastos essenciais, equilibrar seu lazer para não se sobrecarregar, proteger-se com a poupança e começar a investir o que sobrar.",
       type: "info"
     };
     this.hasShieldedIncident = false;
@@ -405,9 +405,9 @@ export class SimulationEngine {
 
   generateMentorFeedback(eventOutcome, privationPenalty, debtTriggered, interestPaid) {
     const professorGreetings = [
-      "Prof. Valmir (Coordenação de Ciências Contábeis - URCA):",
+      "Prof. Valmir (Coordenação de Ciências Econômicas - URCA):",
       "Profª. Helena (Orientadora de Educação Financeira da URCA):",
-      "Núcleo de Apoio Contábil e Fiscal (NAF/URCA):"
+      "Núcleo de Estudos em Economia & Finanças (URCA):"
     ];
     const header = professorGreetings[Math.floor(Math.random() * professorGreetings.length)];
 
@@ -420,7 +420,7 @@ export class SimulationEngine {
         tips.push(`⚠️ **Atenção aos Imprevistos!** Você não tinha reserva suficiente e ${formatBRL(eventOutcome.amountSentToDebt)} virou dívida no cartão de crédito. Lembre-se: imprevistos no Cariri acontecem, e a reserva de emergência é sua primeira linha de defesa.`);
       }
     } else if (eventOutcome.event.category === "income") {
-      tips.push(`💡 **Renda Extra no Cariri!** Entrou ${formatBRL(eventOutcome.gainAdded)} na sua conta. Como futura contadora, aproveite para reforçar sua reserva na poupança ou alocar em títulos antes de gastar por impulso.`);
+      tips.push(`💡 **Renda Extra no Cariri!** Entrou ${formatBRL(eventOutcome.gainAdded)} na sua conta. Como futura economista, aproveite para reforçar sua reserva na poupança ou alocar em títulos antes de gastar por impulso.`);
     }
 
     if (debtTriggered > 0) {

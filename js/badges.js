@@ -69,11 +69,11 @@ export const BADGE_DEFINITIONS = [
   },
   {
     id: "mestre_contabilidade",
-    name: "Orgulho da Contabilidade URCA",
+    name: "Orgulho da Economia URCA",
     icon: "fa-award",
     color: "from-cyan-500 to-blue-700",
     description: "Aumentou o patrimônio líquido total da Camila ao final do semestre letivo em comparação ao início.",
-    pedagogicalValue: "Aplicou na prática o princípio contábil da evolução patrimonial positiva com superávit orçamentário.",
+    pedagogicalValue: "Aplicou na prática os princípios da ciência econômica: maximização de utilidade com restrição orçamentária e superávit patrimonial.",
     checkUnlocked: (state) => {
       if (state.currentMonth < 4 && !state.isGameOver) return false;
       const currentNetWorth = (state.balances.checking + state.balances.savings +

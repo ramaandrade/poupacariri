@@ -3,8 +3,8 @@
 > **Projeto:** PoupaCariri – Simulador de Finanças Pessoais Gamificado para a URCA  
 > **Versão:** 2.0 (MVP)  
 > **Instituição:** Universidade Regional do Cariri (URCA) – Campus Crato  
-> **Público-Alvo:** Estudantes iniciantes de Ciências Contábeis, Economia e Administração da URCA  
-> **Persona de Referência:** Camila Alencar (19 anos), aluna do 1º período de Ciências Contábeis  
+> **Público-Alvo:** Estudantes iniciantes de Ciências Econômicas, Administração e Gestão da URCA  
+> **Persona de Referência:** Camila Alencar (19 anos), aluna do 1º período de Ciências Econômicas  
 > **Arquitetura:** Single-Page Application (SPA) 100% Client-Side, Responsiva e Mobile-First  
 
 ---
@@ -20,7 +20,7 @@ O **PoupaCariri** resolve esse desafio transformando a vivência financeira em u
 ## 👩‍🎓 2. A Persona: Camila Alencar
 
 - **Idade:** 19 anos.
-- **Curso:** Ciências Contábeis (1º Semestre) – Campus Crato da URCA.
+- **Curso:** Ciências Econômicas (1º Semestre) – Campus Crato da URCA.
 - **Residência & Deslocamento:** Reside em Barbalha e se desloca diariamente até o Crato de transporte universitário.
 - **Renda:** Bolsa de Iniciação Científica de R$ 700,00 mensais + eventuais bicos e trabalhos informais no Cariri.
 - **Despesas Essenciais:** R$ 400,00 fixos mensais (Transporte Barbalha-Crato: R$ 160; Alimentação/RU da URCA: R$ 180; Xerox e materiais acadêmicos: R$ 60).
@@ -93,7 +93,7 @@ O PoupaCariri segue rigorosamente o layout definido no PRD:
 - 🏰 **Muralha Anti-Crise:** Cobriu um imprevisto grave 100% com a reserva sem recorrer a dívidas.
 - 🚫 **Orçamentista Sem Dívidas:** Concluiu as rodadas sem entrar no rotativo nem contrair empréstimos.
 - ⚖️ **Equilíbrio Perfeito:** Finalizou o semestre com saldo positivo, sem dívidas e Felicidade >= 70%.
-- 🎓 **Orgulho da Contabilidade URCA:** Encerrou o semestre letivo com patrimônio líquido superior ao inicial.
+- 🎓 **Orgulho da Economia URCA:** Encerrou o semestre letivo com patrimônio líquido superior ao inicial.
 
 ---
 

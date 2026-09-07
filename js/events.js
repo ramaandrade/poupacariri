@@ -44,7 +44,7 @@ export const CARIRI_EVENTS = [
     cost: 90.00,
     icon: "fa-book-bookmark",
     badge: "Despesa Acadêmica Extra",
-    description: "O professor de Contabilidade Geral exigiu um caderno prático de lançamentos contábeis e cópias de exercícios que não estavam previstos.",
+    description: "O professor de Introdução à Economia exigiu um caderno de exercícios aplicados e cópias de textos clássicos que não estavam previstos.",
     didacticConcept: "Gastos com materiais imprevistos ao longo do semestre desestruturam quem vive com o orçamento na régua sem margem de segurança.",
     sourceTag: "[3]"
   },
@@ -78,7 +78,7 @@ export const CARIRI_EVENTS = [
     icon: "fa-cow",
     badge: "Renda Extra Regional",
     description: "Um comerciante local de Barbalha contratou Camila para organizar planilhas de estoque e caixa para a tradicional feira regional.",
-    didacticConcept: "Aplicar conhecimentos do curso (Ciências Contábeis) para gerar renda ativa antecipa a prática profissional e melhora o patrimônio.",
+    didacticConcept: "Aplicar conhecimentos do curso (Ciências Econômicas) para gerar renda ativa antecipa a prática profissional e melhora o patrimônio.",
     sourceTag: "[6, 7]"
   },
   {
